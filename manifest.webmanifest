@@ -1,0 +1,18 @@
+{
+  "name": "周辺状況アナライザー",
+  "short_name": "状況分析",
+  "description": "日時と場所から周辺状況をAI+Web検索で分析し、地図付きレポートを表示するアプリ",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0e1519",
+  "theme_color": "#0b3d5c",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b3d5c" />
+  <title>周辺状況アナライザー</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+
+  <!-- Leaflet (map) -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1>周辺状況アナライザー</h1>
+    <button id="settingsToggle" class="icon-btn" aria-label="設定" title="設定">⚙︎</button>
+  </header>
+
+  <!-- 設定パネル -->
+  <section id="settingsPanel" class="panel hidden" aria-label="設定">
+    <h2>設定</h2>
+    <label class="field">
+      <span>Anthropic API キー</span>
+      <input id="apiKey" type="password" autocomplete="off" placeholder="sk-ant-..." />
+    </label>
+    <label class="field">
+      <span>モデル</span>
+      <select id="model">
+        <option value="claude-opus-5">Claude Opus 5（高精度）</option>
+        <option value="claude-sonnet-5">Claude Sonnet 5（高速・低コスト）</option>
+      </select>
+    </label>
+    <p class="hint">
+      APIキーはこの端末のブラウザ（localStorage）にのみ保存され、Anthropic以外へ送信されません。
+      共有端末では利用後に「キーを消去」してください。
+    </p>
+    <div class="row">
+      <button id="saveSettings" class="btn primary">保存</button>
+      <button id="clearKey" class="btn ghost">キーを消去</button>
+    </div>
+  </section>
+
+  <!-- 入力フォーム -->
+  <main>
+    <section class="panel" aria-label="入力">
+      <label class="field">
+        <span>日時</span>
+        <input id="datetime" type="datetime-local" />
+      </label>
+
+      <fieldset class="field">
+        <legend>場所の指定方法</legend>
+        <div class="segmented">
+          <label><input type="radio" name="locmode" value="coords" checked /> 緯度経度</label>
+          <label><input type="radio" name="locmode" value="address" /> 住所・地名</label>
+        </div>
+      </fieldset>
+
+      <div id="coordsInputs" class="field grid2">
+        <label>
+          <span>緯度 (lat)</span>
+          <input id="lat" type="number" step="any" inputmode="decimal" placeholder="35.6586" />
+        </label>
+        <label>
+          <span>経度 (lon)</span>
+          <input id="lon" type="number" step="any" inputmode="decimal" placeholder="139.7454" />
+        </label>
+      </div>
+
+      <label id="addressInput" class="field hidden">
+        <span>住所・地名</span>
+        <input id="address" type="text" placeholder="例）東京都渋谷区 渋谷駅" />
+      </label>
+
+      <label class="field">
+        <span>分析モード</span>
+        <select id="mode">
+          <option value="anomaly">人流アノマリー分析</option>
+          <option value="disaster">災害・周辺状況把握</option>
+        </select>
+      </label>
+
+      <button id="runBtn" class="btn primary block">調査を開始</button>
+      <p id="formError" class="error hidden"></p>
+    </section>
+
+    <!-- 進捗 -->
+    <section id="progress" class="panel progress hidden" aria-live="polite">
+      <div class="spinner" aria-hidden="true"></div>
+      <div>
+        <div id="progressStatus">調査を準備しています…</div>
+        <div id="progressTimer" class="muted">経過 0 秒</div>
+      </div>
+    </section>
+
+    <!-- 結果 -->
+    <section id="results" class="hidden" aria-label="レポート">
+      <div id="summaryCard" class="panel"></div>
+      <div id="mapWrap" class="panel hidden">
+        <h2 class="card-title">地図</h2>
+        <div id="map"></div>
+        <p id="mapNote" class="muted small"></p>
+      </div>
+      <div id="sections"></div>
+      <div id="reveal"></div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p class="muted small">
+      本アプリの分析はAIとWeb検索に基づく推定を含みます。緊急時は必ず自治体・公式機関の一次情報を確認してください。
+    </p>
+  </footer>
+
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJ6MG+k9j4XCC2M0hKmGN9WeVjNGA="
+    crossorigin=""
+  ></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+  <script src="app.js" defer></script>
+</body>
+</html>
