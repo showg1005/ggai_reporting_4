@@ -297,10 +297,11 @@ function buildUserPrompt({ datetime, locationText, center }) {
 }
 
 async function generateReport({ datetime, locationText, center, settings }) {
+  // 注意: OpenAI の web_search ツールは JSON 強制モード(text.format)と併用できないため、
+  // フォーマット指定はせず、プロンプトでJSON出力を指示して寛容に解析する。
   const body = {
     model: settings.model,
     tools: [{ type: 'web_search' }],
-    text: { format: { type: 'json_object' } },
     input: [
       { role: 'system', content: buildSystemPrompt() },
       { role: 'user', content: buildUserPrompt({ datetime, locationText, center }) },
