@@ -1,7 +1,7 @@
 /* Service Worker — アプリシェル
    ネットワーク優先: オンライン時は常に最新を取得し、オフライン時のみキャッシュを使う。
    （キャッシュ優先だと更新が反映されない問題を回避） */
-const CACHE = 'ggai-reporting-v2';
+const CACHE = 'ggai-reporting-v3';
 const ASSETS = [
   './',
   './index.html',

@@ -16,6 +16,9 @@
 
 * { box-sizing: border-box; }
 
+/* hidden 属性を常に優先（.modal の display:grid / .field の display:flex 等に上書きされないように） */
+[hidden] { display: none !important; }
+
 html, body {
   margin: 0;
   padding: 0;
