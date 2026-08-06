@@ -1,0 +1,19 @@
+{
+  "name": "周辺状況把握レポート",
+  "short_name": "状況レポート",
+  "description": "日時と地点を入力すると、周辺の道路・断水・停電・土砂崩れ・避難所などの状況をWeb検索で分析しレポート化します。",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "lang": "ja",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

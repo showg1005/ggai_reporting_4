@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f172a" />
+  <title>周辺状況把握レポート</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <!-- Leaflet (地図) -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-bar">
+    <button id="backBtn" class="icon-btn" hidden aria-label="戻る">‹</button>
+    <h1 class="app-title">周辺状況把握レポート</h1>
+    <button id="settingsBtn" class="icon-btn" aria-label="設定">⚙</button>
+  </header>
+
+  <main id="main">
+    <!-- ========== 入力画面 ========== -->
+    <section id="inputView" class="view">
+      <p class="lead">
+        「ある日時」の「ある地点」付近の周辺状況（道路・断水・停電・土砂崩れ・建造物被害・避難所・給水所・医療機関など）を、
+        最新ニュースやSNS情報も検索しながら分析し、レポートを作成します。
+      </p>
+
+      <form id="reportForm" class="card">
+        <label class="field">
+          <span class="field-label">日時</span>
+          <input type="datetime-local" id="datetime" required />
+        </label>
+
+        <div class="field">
+          <span class="field-label">場所の指定方法</span>
+          <div class="toggle" role="tablist">
+            <button type="button" class="toggle-btn active" data-mode="address" role="tab">住所</button>
+            <button type="button" class="toggle-btn" data-mode="latlng" role="tab">緯度経度</button>
+          </div>
+        </div>
+
+        <label class="field" id="addressField">
+          <span class="field-label">住所 / 地名</span>
+          <input type="text" id="address" placeholder="例：東京都千代田区丸の内1丁目" autocomplete="off" />
+        </label>
+
+        <div class="field latlng-fields" id="latlngField" hidden>
+          <div class="latlng-row">
+            <label class="field">
+              <span class="field-label">緯度 (lat)</span>
+              <input type="number" id="lat" step="any" placeholder="35.681" inputmode="decimal" />
+            </label>
+            <label class="field">
+              <span class="field-label">経度 (lng)</span>
+              <input type="number" id="lng" step="any" placeholder="139.767" inputmode="decimal" />
+            </label>
+          </div>
+        </div>
+
+        <button type="submit" class="primary-btn" id="submitBtn">レポートを作成</button>
+        <p class="hint" id="formHint"></p>
+      </form>
+    </section>
+
+    <!-- ========== 読み込み画面 ========== -->
+    <section id="loadingView" class="view" hidden>
+      <div class="loading">
+        <div class="spinner" aria-hidden="true"></div>
+        <p id="loadingText">周辺状況を調査中です…</p>
+        <p class="hint">最新ニュース・災害情報などをWeb検索しています。少し時間がかかることがあります。</p>
+      </div>
+    </section>
+
+    <!-- ========== レポート画面 ========== -->
+    <section id="reportView" class="view" hidden>
+      <div id="map" class="map"></div>
+      <div id="reportBody" class="report-body"></div>
+      <div id="reportControls" class="report-controls"></div>
+    </section>
+  </main>
+
+  <!-- ========== 設定ダイアログ ========== -->
+  <div id="settingsModal" class="modal" hidden>
+    <div class="modal-card">
+      <h2>設定</h2>
+      <label class="field">
+        <span class="field-label">OpenAI API キー</span>
+        <input type="password" id="apiKeyInput" placeholder="sk-..." autocomplete="off" />
+        <span class="hint">キーはこの端末のブラウザ内（localStorage）にのみ保存されます。</span>
+      </label>
+      <label class="field">
+        <span class="field-label">モデル</span>
+        <input type="text" id="modelInput" placeholder="gpt-4o" autocomplete="off" />
+        <span class="hint">Web検索対応モデルを指定してください（既定: gpt-4o）。</span>
+      </label>
+      <div class="modal-actions">
+        <button type="button" class="ghost-btn" id="settingsCancel">閉じる</button>
+        <button type="button" class="primary-btn" id="settingsSave">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+  <script src="app.js"></script>
+</body>
+</html>
