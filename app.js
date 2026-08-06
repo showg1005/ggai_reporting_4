@@ -32,16 +32,28 @@ const views = {
   report: $('reportView'),
 };
 
-/* ---------------- 設定 (localStorage) ---------------- */
+/* ---------------- 設定 (localStorage + メモリfallback) ---------------- */
+// プライベートブラウズ等で localStorage が使えない環境でも動くように、
+// メモリ上にも保持する。
+let memorySettings = null;
+
 function loadSettings() {
   try {
-    return JSON.parse(localStorage.getItem(STORE_KEY)) || {};
+    const raw = localStorage.getItem(STORE_KEY);
+    if (raw) return JSON.parse(raw);
   } catch {
-    return {};
+    /* localStorage 使用不可 */
   }
+  return memorySettings || {};
 }
 function saveSettings(s) {
-  localStorage.setItem(STORE_KEY, JSON.stringify(s));
+  memorySettings = s;
+  try {
+    localStorage.setItem(STORE_KEY, JSON.stringify(s));
+    return true; // 永続化できた
+  } catch {
+    return false; // メモリのみ（このセッション内は有効）
+  }
 }
 function getSettings() {
   const s = loadSettings();
@@ -97,11 +109,16 @@ function openSettings() {
   $('settingsModal').hidden = false;
 }
 function onSaveSettings() {
-  saveSettings({
+  const persisted = saveSettings({
     apiKey: $('apiKeyInput').value.trim(),
     model: $('modelInput').value.trim() || 'gpt-4o',
   });
   $('settingsModal').hidden = true;
+  const hint = $('formHint');
+  hint.classList.remove('error');
+  hint.textContent = persisted
+    ? '設定を保存しました。'
+    : '設定を保存しました（ブラウザ設定によりページを閉じると消える場合があります）。';
 }
 
 /* ---------------- 送信 ---------------- */
@@ -637,4 +654,9 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-document.addEventListener('DOMContentLoaded', init);
+// スクリプトが DOMContentLoaded より後に評価されても確実に初期化する
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
