@@ -648,11 +648,20 @@ function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
-/* ---------------- Service Worker ---------------- */
+/* ---------------- Service Worker を無効化 ----------------
+   キャッシュにより更新が反映されない問題を避けるため、既存の Service Worker と
+   キャッシュを解除し、常にサーバーから最新を取得する。 */
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
-  });
+  navigator.serviceWorker
+    .getRegistrations()
+    .then((regs) => regs.forEach((r) => r.unregister()))
+    .catch(() => {});
+  if (window.caches && caches.keys) {
+    caches
+      .keys()
+      .then((keys) => keys.forEach((k) => caches.delete(k)))
+      .catch(() => {});
+  }
 }
 
 // スクリプトが DOMContentLoaded より後に評価されても確実に初期化する

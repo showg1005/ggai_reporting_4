@@ -61,7 +61,7 @@ npx serve .
 | レポート生成 | OpenAI Responses API（`web_search` ツール、JSON 出力）|
 | 地図 | Leaflet + OpenStreetMap タイル |
 | 住所→座標 / 地名→座標 | Nominatim（OpenStreetMap ジオコーディング） |
-| オフライン起動 | Service Worker によるアプリシェルキャッシュ |
+| 配信 | 静的ホスティング（GitHub Pages 等）。常にサーバーから最新を取得 |
 
 ## 注意事項
 
@@ -77,6 +77,5 @@ index.html            画面（入力・読込・レポート・設定）
 styles.css            スタイル（モバイルファースト）
 app.js                ロジック（入力→OpenAI→地図→段階表示）
 manifest.webmanifest  PWA マニフェスト
-sw.js                 Service Worker
 icon.svg              アプリアイコン
 ```
